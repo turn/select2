@@ -732,7 +732,7 @@ the specific language governing permissions and limitations under the Apache Lic
             this.dropdown.on("click", killEvent);
 
             this.results = results = this.container.find(resultsSelector);
-            this.search = search = this.container.find("input.select2-input");
+            this.search = search = this.container.find((opts && opts.containerType) ? ".select2-input" : "input.select2-input");
 
             this.queryCount = 0;
             this.resultsPage = 0;
@@ -2547,7 +2547,7 @@ the specific language governing permissions and limitations under the Apache Lic
                 "<ul class='select2-choices'>",
                 "  <li class='select2-search-field'>",
                 "    <label for='' class='select2-offscreen'></label>",
-                "    <input type='text' autocomplete='off' autocorrect='off' autocapitalize='off' spellcheck='false' class='select2-input'>",
+                "    <"+ ((this.opts && this.opts.containerType) ? this.opts.containerType : "input") + " type='text' autocomplete='off' autocorrect='off' autocapitalize='off' spellcheck='false' class='select2-input'>"+(this.opts && this.opts.containerType ? "</"+this.opts.containerType+">" : ""),
                 "  </li>",
                 "</ul>",
                 "<div class='select2-drop select2-drop-multi select2-display-none'>",
@@ -3426,8 +3426,8 @@ the specific language governing permissions and limitations under the Apache Lic
         formatInputTooShort: function (input, min) { var n = min - input.length; return "Please enter " + n + " or more character" + (n == 1? "" : "s"); },
         formatInputTooLong: function (input, max) { var n = input.length - max; return "Please delete " + n + " character" + (n == 1? "" : "s"); },
         formatSelectionTooBig: function (limit) { return "You can only select " + limit + " item" + (limit == 1 ? "" : "s"); },
-        formatLoadMore: function (pageNumber) { return "Loading more results…"; },
-        formatSearching: function () { return "Searching…"; },
+        formatLoadMore: function (pageNumber) { return "Loading more results���"; },
+        formatSearching: function () { return "Searching���"; },
         minimumResultsForSearch: 0,
         minimumInputLength: 0,
         maximumInputLength: null,
