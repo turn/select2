@@ -2953,6 +2953,45 @@ the specific language governing permissions and limitations under the Apache Lic
 
         },
 
+        onSelectMulti: function (data, options) {
+            var self = this;
+
+            self.clearSearch();
+            self.updateResults();
+            if (this.opts.closeOnSelect) {
+                this.close();
+                this.search.width(10);
+            } else {
+                if (this.countSelectableResults()>0) {
+                    this.search.width(10);
+                    this.resizeSearch();
+                    if (this.getMaximumSelectionSize() > 0 && this.val().length >= this.getMaximumSelectionSize()) {
+                        // if we reached max selection size repaint the results so choices
+                        // are replaced with the max selection reached message
+                        this.updateResults(true);
+                    } else {
+                        // initializes search's value with nextSearchTerm and update search result
+                        if(this.nextSearchTerm !== undefined){
+                            this.search.val(this.nextSearchTerm);
+                            this.updateResults();
+                            this.search.select();
+                        }
+                    }
+                    this.positionDropdown();
+                } else {
+                    // if nothing left to select close
+                    this.close();
+                    this.search.width(10);
+                }
+            }
+            // since its not possible to select an element that has already been
+            // added we do not need to check if this is a new element before firing change
+            self.triggerChange({ added: data });
+            
+            if (!options || !options.noFocus)
+                this.focusSearch();
+        },
+
         // multi
         onSelect: function (data, options) {
 
@@ -2964,8 +3003,6 @@ the specific language governing permissions and limitations under the Apache Lic
 
             // keep track of the search's value before it gets cleared
             this.nextSearchTerm = this.opts.nextSearchTerm(data, this.search.val());
-
-            this.clearSearch();
             this.updateResults();
 
             if (this.select || !this.opts.closeOnSelect) this.postprocessResults(data, false, this.opts.closeOnSelect===true);
@@ -3242,7 +3279,7 @@ the specific language governing permissions and limitations under the Apache Lic
             if (!val && val !== 0) {
                 this.opts.element.val("");
                 this.updateSelection([]);
-                this.clearSearch();
+
                 if (triggerChange) {
                     this.triggerChange({added: this.data(), removed: oldData});
                 }
@@ -3272,7 +3309,6 @@ the specific language governing permissions and limitations under the Apache Lic
                     }
                 });
             }
-            this.clearSearch();
         },
 
         // multi
@@ -3321,7 +3357,6 @@ the specific language governing permissions and limitations under the Apache Lic
                 ids = $.map(values, function(e) { return self.opts.id(e); });
                 this.setVal(ids);
                 this.updateSelection(values);
-                this.clearSearch();
                 if (triggerChange) {
                     this.triggerChange(this.buildChangeDetails(old, this.data()));
                 }
